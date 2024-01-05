@@ -1,3 +1,3 @@
-airflow
-kafaka-python
+apache-airflow
+kafka-python
 requests

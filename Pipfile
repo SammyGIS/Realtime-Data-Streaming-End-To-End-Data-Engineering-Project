@@ -4,8 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-airflow = "*"
-kafaka-python = "*"
+apache-airflow = "*"
+kafka-python = "*"
 requests = "*"
 
 [dev-packages]
