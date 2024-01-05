@@ -29,14 +29,17 @@ def format_data(raw_data):
     data['picture'] = raw_data['picture']['medium']
 
 def stream_data():
+    from kafka import kafkaProducer
+    import time
     import json
     import requests
 
-    response = requests.get('https://randomuser.me/api')
-    response = response.json()
-    response_result = response.get('result')[0]
-    return response_result
+    response = get_data()
+    response = format_data(response)
+    
+    producer = kafkaProducer(bootstrap_servers = ['localhost:9092'], max_block_ms=5000)
 
+    producer.send
 
 default_args = {
 
