@@ -1,6 +1,6 @@
 from datetime import datetime
-from airflow import DAG 
-from airflow.operators.python import PythonOperator
+# from airflow import DAG 
+# from airflow.operators.python import PythonOperator
 
 
 def get_data():
@@ -9,7 +9,7 @@ def get_data():
 
     response = requests.get('https://randomuser.me/api')
     response = response.json()
-    response_result = response.get('result')[0]
+    response_result = response['results'][0]
     return response_result
 
 def format_data(raw_data):
@@ -29,7 +29,7 @@ def format_data(raw_data):
     data['picture'] = raw_data['picture']['medium']
 
 def stream_data():
-    from kafka import kafkaProducer
+    from kafka import KafkaProducer
     import time
     import json
     import requests
@@ -37,25 +37,25 @@ def stream_data():
     response = get_data()
     response = format_data(response)
     
-    producer = kafkaProducer(bootstrap_servers = ['localhost:9092'], max_block_ms=5000)
+    producer = KafkaProducer(bootstrap_servers = ['localhost:9092'], max_block_ms=5000)
 
-    producer.send
+    producer.send('user_created', json.dumps(response).encode('utf-8'))
 
-default_args = {
+# default_args = {
 
-    'owner': 'airscholar',
-    'start_date':datetime(2024,1,3,10,00)
-}
+#     'owner': 'airscholar',
+#     'start_date':datetime(2024,1,3,10,00)
+# }
 
-with DAG as ('user-automation',
-    default_args=default_args,
-    schedule_interval = '@daily',
-    catchup=False
-    ) as dag
+# with DAG as ('user-automation',
+#     default_args=default_args,
+#     schedule_interval = '@daily',
+#     catchup=False
+#     ) as dag
 
-    streaming_task = PythonOperator(
-        task_id = 'stream_Data_api',
-        python_callable=
-    )
+#     streaming_task = PythonOperator(
+#         task_id = 'stream_Data_api',
+#         python_callable=
+#     )
 
-# stream_data()
+stream_data()
