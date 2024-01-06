@@ -1,6 +1,7 @@
 from datetime import datetime
-# from airflow import DAG 
-# from airflow.operators.python import PythonOperator
+from airflow import DAG 
+from airflow.operators.python import PythonOperator
+import logging
 
 
 def get_data():
@@ -27,35 +28,37 @@ def format_data(raw_data):
     data['registered_date'] = raw_data['registered']['date']
     data['phone'] = raw_data['phone']
     data['picture'] = raw_data['picture']['medium']
+    return data
 
 def stream_data():
     from kafka import KafkaProducer
     import time
     import json
-    import requests
 
-    response = get_data()
-    response = format_data(response)
-    
-    producer = KafkaProducer(bootstrap_servers = ['localhost:9092'], max_block_ms=5000)
+    producer = KafkaProducer(bootstrap_servers = ['broker:29029'], max_block_ms=5000)
+    current_time = time.time()
+    while True:
+        if time.time() > current_time + 60:
+            break
+        try:
+                raw_data = get_data()
+                response = format_data(raw_data)
+                producer.send('user_created', json.dumps(response).encode('utf-8'))
+        except Exception as e:
+            logging.error(f'An error Occured: {e}')
 
-    producer.send('user_created', json.dumps(response).encode('utf-8'))
+default_args = {
+    'owner': 'samuel',
+    'start_date':datetime(2024,1,3,10,00)
+}
 
-# default_args = {
+with DAG ('user-automation',
+    default_args=default_args,
+    schedule_interval = '@daily',
+    catchup=False) as dag:
 
-#     'owner': 'airscholar',
-#     'start_date':datetime(2024,1,3,10,00)
-# }
+    streaming_task = PythonOperator (
+        task_id = 'stream_data_from_api',
+        python_callable = stream_data
+    )
 
-# with DAG as ('user-automation',
-#     default_args=default_args,
-#     schedule_interval = '@daily',
-#     catchup=False
-#     ) as dag
-
-#     streaming_task = PythonOperator(
-#         task_id = 'stream_Data_api',
-#         python_callable=
-#     )
-
-stream_data()
