@@ -35,7 +35,7 @@ def stream_data():
     import time
     import json
 
-    producer = KafkaProducer(bootstrap_servers = ['broker:29029'], max_block_ms=5000)
+    producer = KafkaProducer(bootstrap_servers = ['broker:29092'], max_block_ms=5000)
     current_time = time.time()
     while True:
         if time.time() > current_time + 60:
@@ -46,10 +46,11 @@ def stream_data():
                 producer.send('user_created', json.dumps(response).encode('utf-8'))
         except Exception as e:
             logging.error(f'An error Occured: {e}')
+            continue
 
 default_args = {
     'owner': 'samuel',
-    'start_date':datetime(2024,1,3,10,00)
+    'start_date':datetime(2024,1,6,10,00)
 }
 
 with DAG ('user-automation',
@@ -61,4 +62,3 @@ with DAG ('user-automation',
         task_id = 'stream_data_from_api',
         python_callable = stream_data
     )
-
