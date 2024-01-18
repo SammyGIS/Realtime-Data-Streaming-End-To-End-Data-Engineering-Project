@@ -3,18 +3,17 @@ Kafka Data Stream uisng Kafka Producer
 Owner: Ajeyomi Adedoyin Samuel
 Date: January 6th 2024
 """
-
-
 from datetime import datetime
 from airflow import DAG 
 from airflow.operators.python import PythonOperator
+from kafka import KafkaProducer
+import time
+import json
 import logging
+import requests
 
 
 def get_data():
-    import json
-    import requests
-
     response = requests.get('https://randomuser.me/api')
     response = response.json()
     response_result = response['results'][0]
@@ -38,10 +37,6 @@ def format_data(raw_data):
     return data
 
 def stream_data():
-    from kafka import KafkaProducer
-    import time
-    import json
-
     producer = KafkaProducer(bootstrap_servers = ['broker:29092'], max_block_ms=5000)
     current_time = time.time()
     while True:
