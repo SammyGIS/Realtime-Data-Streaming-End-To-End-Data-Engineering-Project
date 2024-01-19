@@ -21,8 +21,8 @@ This project implements a data engineering pipeline to process data from the Ran
 
 ### Setup
 1. Ensure Docker and Docker Compose are installed on your system.
-2. Clone the repository: `git clone https://github.com/your_username/your_project.git`
-3. Navigate to the project directory: `cd your_project`
+2. Clone the repository: `git clone https://github.com/sammygis/Realtime-Data-Streaming-End-To-End-Data-Engineering-Project.git`
+3. Navigate to the project directory: `cd Realtime-Data-Streaming-End-To-End-Data-Engineering-Project`
 
 ### Running the Pipeline
 1. Start the services using Docker Compose: `docker-compose up -d`
