@@ -1,7 +1,3 @@
-It seems like you've provided two Python scripts (`kafka_stream.py` and `spark_stream.py`) that are part of a data engineering pipeline using Apache Kafka, Spark, and Cassandra. Additionally, you mentioned the use of Docker Compose, PostgreSQL, Airflow, and a tutorial you followed for reference.
-
-To create a README file for your project, you can follow these guidelines:
-
 # Data Engineering Pipeline with Kafka, Spark, and Cassandra
 
 ## Overview
